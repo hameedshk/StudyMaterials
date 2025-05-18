@@ -1,0 +1,69 @@
+title = "Gitleaks Config for C# .csproj Secret Detection"
+
+[allowlist]
+  description = "Whitelist for paths, regexes, and commits"
+  paths = []
+
+#######################
+# Core XML-based Rules
+#######################
+
+[[rules]]
+id = "xml-api-key"
+description = "Detects <ApiKey> in XML files like .csproj"
+regex = '''<ApiKey>\s*[^<\s]+?\s*</ApiKey>'''
+tags = ["apikey", "csharp", "csproj"]
+severity = "high"
+
+[[rules]]
+id = "xml-secret-key"
+description = "Detects <SecretKey> in XML files like .csproj"
+regex = '''<SecretKey>\s*[^<\s]+?\s*</SecretKey>'''
+tags = ["secret", "csharp", "csproj"]
+severity = "high"
+
+[[rules]]
+id = "xml-token"
+description = "Detects <Token> in XML files like .csproj"
+regex = '''<Token>\s*[^<\s]+?\s*</Token>'''
+tags = ["token", "csharp", "csproj"]
+severity = "high"
+
+[[rules]]
+id = "xml-connection-string"
+description = "Detects <ConnectionString> with likely secrets"
+regex = '''<ConnectionString>\s*[^<]+?\s*</ConnectionString>'''
+tags = ["db", "connection-string", "csproj"]
+severity = "critical"
+
+[[rules]]
+id = "xml-user-secrets-id"
+description = "Detects <UserSecretsId> used for secret storage"
+regex = '''<UserSecretsId>\s*[^<\s]+?\s*</UserSecretsId>'''
+tags = ["secrets", "csharp", "csproj"]
+severity = "medium"
+
+##############################
+# Advanced Build Config Rules
+##############################
+
+[[rules]]
+id = "xml-env-secret"
+description = "Secrets in environment variable definition"
+regex = '''<EnvironmentVariable>\s*.*(token|key|secret).*=.*</EnvironmentVariable>'''
+tags = ["env", "csproj", "secret"]
+severity = "high"
+
+[[rules]]
+id = "xml-define-constants"
+description = "Suspicious define constants with secrets"
+regex = '''<DefineConstants>\s*.*(key|token|secret).*=.*</DefineConstants>'''
+tags = ["define", "build", "csproj"]
+severity = "medium"
+
+[[rules]]
+id = "xml-propertygroup-secret"
+description = "Secrets in PropertyGroup with possible secret indicators"
+regex = '''<PropertyGroup>\s*(.|\n)*?(key|secret|token).*(.|\n)*?</PropertyGroup>'''
+tags = ["ci", "build", "csproj"]
+severity = "medium"
