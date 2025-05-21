@@ -9,6 +9,14 @@ title = "Gitleaks Config for C# .csproj Secret Detection"
 #######################
 
 [[rules]]
+id = "csproj-cert-password"
+description = "Hardcoded certificate password in .csproj"
+regex = '''<Cert(?:ificate)?Password>\s*[^<\s]+.*?</Cert(?:ificate)?Password>'''
+tags = ["csproj", "cert", "password", "secret"]
+path = '''(?i)\.csproj$'''
+
+
+[[rules]]
 id = "xml-api-key"
 description = "Detects <ApiKey> in XML files like .csproj"
 regex = '''<ApiKey>\s*[^<\s]+?\s*</ApiKey>'''
