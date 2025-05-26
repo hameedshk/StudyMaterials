@@ -1,0 +1,129 @@
+# .gitleaks.toml - Best practices for .NET .csproj files
+
+title = "Gitleaks config for .NET projects"
+
+# Common .NET-specific secret patterns to detect
+[[rules]]
+id = "connection-string"
+description = "Connection strings in .csproj"
+regex = '''(?i)(connectionstring|data source|server|database)\s*=\s*["'][^"']*["']'''
+path = '''\.csproj$'''
+
+[[rules]]
+id = "api-key-csproj"
+description = "API keys in .csproj files"
+regex = '''(?i)(api[_-]?key|apikey)\s*=\s*["'][A-Za-z0-9+/=]{20,}["']'''
+path = '''\.csproj$'''
+
+[[rules]]
+id = "password-csproj"
+description = "Passwords in .csproj files"
+regex = '''(?i)(password|pwd)\s*=\s*["'][^"']{8,}["']'''
+path = '''\.csproj$'''
+
+# Allowlist - Common false positives in .csproj files
+[allowlist]
+description = "Allowlist for .csproj false positives"
+paths = [
+    '''\.csproj$'''
+]
+regexes = [
+    # Certificate file paths
+    '''\.pfx['"]?\s*(/?>|update)''',
+    '''\.p12['"]?\s*(/?>|update)''',
+    '''\.pem['"]?\s*(/?>|update)''',
+    '''\.cer['"]?\s*(/?>|update)''',
+    '''\.crt['"]?\s*(/?>|update)''',
+    
+    # Common .NET paths and directories
+    '''(bin|obj|packages|wwwroot)[\\\/]''',
+    '''configuration[\\\/]certificates[\\\/]''',
+    '''app\.config''',
+    '''web\.config''',
+    
+    # Package references and versions
+    '''<PackageReference\s+Include=''',
+    '''<ProjectReference\s+Include=''',
+    '''Version\s*=\s*["'][0-9\.]+["']''',
+    
+    # Assembly info
+    '''AssemblyVersion''',
+    '''AssemblyFileVersion''',
+    '''AssemblyInformationalVersion''',
+    
+    # Target frameworks
+    '''<TargetFramework[s]?>''',
+    '''net[0-9\.]+''',
+    '''netstandard[0-9\.]+''',
+    '''netcoreapp[0-9\.]+''',
+    
+    # Output paths
+    '''<OutputPath>''',
+    '''<DocumentationFile>''',
+    
+    # MSBuild properties that commonly trigger false positives
+    '''<DefineConstants>''',
+    '''<WarningsAsErrors>''',
+    '''<TreatWarningsAsErrors>''',
+    
+    # NuGet restore
+    '''<RestorePackagesWithLockFile>''',
+    '''<PackageReference.*PrivateAssets=''',
+    
+    # Common XML attributes that aren't secrets
+    '''xmlns[:=]''',
+    '''xsi:schemaLocation''',
+    
+    # File extensions that commonly appear in csproj but aren't secrets
+    '''\.dll['"]''',
+    '''\.exe['"]''',
+    '''\.xml['"]''',
+    '''\.json['"]''',
+    '''\.txt['"]''',
+    '''\.md['"]''',
+    
+    # Company/domain names (adjust to your organization)
+    '''company\.corp''',
+    '''\.local''',
+    '''localhost''',
+    
+    # Common development placeholder values
+    '''(test|sample|example|demo)''',
+    '''your[_-]?(api[_-]?key|secret|token)''',
+    '''replace[_-]?me''',
+    '''todo''',
+    '''fixme''',
+]
+
+# Specific rules for common .NET secret locations
+[[rules]]
+id = "nuget-api-key"
+description = "NuGet API keys"
+regex = '''<add\s+key\s*=\s*["'].*nuget.*["']\s+value\s*=\s*["'][A-Za-z0-9+/=]{20,}["']'''
+path = '''(\.csproj|nuget\.config|NuGet\.Config)$'''
+
+[[rules]]
+id = "app-settings-secrets"
+description = "Secrets in appSettings"
+regex = '''<add\s+key\s*=\s*["'].*(secret|key|token|password).*["']\s+value\s*=\s*["'][A-Za-z0-9+/=]{8,}["']'''
+path = '''(\.csproj|\.config)$'''
+
+# Additional allowlist for MSBuild conditions and properties
+[allowlist]
+description = "MSBuild specific allowlist"
+regexes = [
+    # MSBuild conditions
+    '''\$\(Configuration\)''',
+    '''\$\(Platform\)''',
+    '''\$\(TargetFramework\)''',
+    '''\$\(MSBuildProjectDirectory\)''',
+    
+    # Common MSBuild properties
+    '''<PropertyGroup''',
+    '''<ItemGroup''',
+    '''<Import\s+Project''',
+    '''<Sdk\s+Name''',
+    
+    # Code analysis suppressions
+    '''<SuppressMessage''',
+]
