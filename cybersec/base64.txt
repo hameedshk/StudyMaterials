@@ -1,0 +1,22 @@
+🔧 How Base64 Works — Step-by-Step
+1. Input is grouped in 3 bytes = 24 bits
+Example:
+M a n → 01001101 01100001 01101110
+
+2. Split the 24 bits into four 6-bit groups
+010011 010110 000101 101110
+
+3. Each 6-bit group maps to a Base64 character
+Using this table:
+
+Index	Char
+0–25	A–Z
+26–51	a–z
+52–61	0–9
+62	+
+63	/
+
+4. Result is 4 Base64 characters
+Example:
+"Man" → TWFu
+
