@@ -75,3 +75,4 @@ description = "Secrets in PropertyGroup with possible secret indicators"
 regex = '''<PropertyGroup>\s*(.|\n)*?(key|secret|token).*(.|\n)*?</PropertyGroup>'''
 tags = ["ci", "build", "csproj"]
 severity = "medium"
+
