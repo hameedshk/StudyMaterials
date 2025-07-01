@@ -45,3 +45,5 @@ So:
 
 9 bytes → 12 Base64 characters
 …and so on.
+
+https://drive.google.com/drive/folders/1lS9u5bK5iSN3vD7IP9K9-0dgJ3obqGX6
